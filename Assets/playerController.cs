@@ -62,26 +62,19 @@ public class playerController : NetworkBehaviour
         {
             return;
         }
-        Vector2 sizeCalc;
-        Vector2 startVec;
         if (locations.Count != 0)
         {
-            startVec = locations[locations.Count - 1];
-            sizeCalc = mousePos - startVec;
+            Vector2 sizeCalc = mousePos - locations[locations.Count - 1];
+            float mag = sizeCalc.magnitude;
+            if (pathLength + mag > maxLength)
+            {
+                sizeCalc *= (1 / (mag));
+                sizeCalc *= maxLength - pathLength;
+                mousePos = sizeCalc + locations[locations.Count - 1];
+            }
+            pathLength += sizeCalc.magnitude;
         }
-        else
-        {
-            startVec = toVector2(gameObject.transform.position);
-            sizeCalc = mousePos - startVec;
-        }
-        float mag = sizeCalc.magnitude;
-        if (pathLength + mag > maxLength)
-        {
-            sizeCalc *= (1 / (mag));
-            sizeCalc *= maxLength - pathLength;
-            mousePos = sizeCalc + startVec;
-        }
-        pathLength += sizeCalc.magnitude;
+
         locations.Add(mousePos);
     }
 
@@ -91,24 +84,19 @@ public class playerController : NetworkBehaviour
         {
             return;
         }
-        Vector2 sizeCalc;
-        Vector2 startVec;
-        if (locations.Count != 0) {
-            startVec = locations[locations.Count - 1];
-            sizeCalc = mousePos - startVec;
-        }
-        else {
-            startVec = toVector2(gameObject.transform.position);
-            sizeCalc = mousePos - startVec;
-        }
-        float mag = sizeCalc.magnitude;
-        if (pathLength + mag > maxLength)
+        if (locations.Count != 0)
         {
-            sizeCalc *= (1 / (mag));
-            sizeCalc *= maxLength - pathLength;
-            mousePos = sizeCalc + startVec;
+            Vector2 sizeCalc = mousePos - locations[locations.Count - 1];
+            float mag = sizeCalc.magnitude;
+            if (pathLength + mag > maxLength)
+            {
+                sizeCalc *= (1 / (mag));
+                sizeCalc *= maxLength - pathLength;
+                mousePos = sizeCalc + locations[locations.Count - 1];
+            }
+            pathLength += sizeCalc.magnitude;
         }
-        pathLength += sizeCalc.magnitude;
+
         locations.Add(mousePos);
     }
 
