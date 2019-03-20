@@ -48,7 +48,10 @@ public List<playerController> players = new List<playerController>();
 
     void UpdateClientLocation(Vector2 location, playerController player)
     {
+        if (!isServer)
+        {
             player.RpcUpdateLocation(location);
+        }
     }
     void UpdateClientAttack(int attack, playerController player)
     {
@@ -74,14 +77,14 @@ public List<playerController> players = new List<playerController>();
         {
             players[i].RpcToggleMoving();
         }
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
+        yield return new WaitUntil(PlayersComplete);
       
         StartCoroutine(Timer(3));
     }
 
     public bool PlayersComplete()
     {
-        print("PlayerCount: " + players.Count);
         for(int i = 0; i < players.Count; i++)
         {
             print("I: " + i);
