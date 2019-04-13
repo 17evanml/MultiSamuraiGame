@@ -62,6 +62,7 @@ public List<playerController> players = new List<playerController>();
             players[i].RpcClearCLient();
         }
         yield return new WaitForSeconds(seconds);
+        GameObject.Find("Main Camera").GetComponent<CameraFollow>().RpcToggleMoving();
         StartCoroutine(startMoving());
 
     }
@@ -76,17 +77,18 @@ public List<playerController> players = new List<playerController>();
         }
         yield return new WaitForSeconds(1);
         yield return new WaitUntil(PlayersComplete);
-      
+        GameObject.Find("Main Camera").GetComponent<CameraFollow>().RpcToggleMoving();
         StartCoroutine(Timer(3));
+        
     }
 
     public bool PlayersComplete()
     {
-        print("PlayerCount: " + players.Count);
+      //  print("PlayerCount: " + players.Count);
         for(int i = 0; i < players.Count; i++)
         {
-            print("I: " + i);
-            print("IsMoving: "  + players[i].Moving);
+          //  print("I: " + i);
+        //    print("IsMoving: "  + players[i].Moving);
             if(players[i].Moving == true)
             {
                 print("returning false");
