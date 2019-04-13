@@ -9,12 +9,14 @@ public class playerController : NetworkBehaviour
     public  Vector2 destination;
     bool tempvar = true;
     //private CombatHandler handler;
+    public GameObject target;
     public float speed = 10;
     private int attack;
     private int maxLength = 5;
     private float pathLength = 0;
     float t = 0;
     public bool Moving = false;
+    public List<GameObject> targets = new List<GameObject>();
     // Start is called before the first frame update
     void Start() {
         if(isServer)
@@ -32,11 +34,14 @@ public class playerController : NetworkBehaviour
             {   
                 Vector2 normalizedMouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector2 tempLoc = new Vector2(normalizedMouse.x, normalizedMouse.y);
-                if (!isServer)
+                if (!onTarget(tempLoc))
                 {
-                    CmdStoreLocation(tempLoc);
-                } 
-                StoreLocation(tempLoc);
+                    if (!isServer)
+                    {
+                        CmdStoreLocation(tempLoc);
+                    }
+                    StoreLocation(tempLoc);
+                }
             }
         }
     }
@@ -62,24 +67,22 @@ public class playerController : NetworkBehaviour
         {
             return;
         }
-        Vector2 sizeCalc;
-        Vector2 startVec;
+        Vector2 lastPos;
         if (locations.Count != 0)
         {
-            startVec = locations[locations.Count - 1];
-            sizeCalc = mousePos - startVec;
+            lastPos = locations[locations.Count - 1];
         }
         else
         {
-            startVec = toVector2(gameObject.transform.position);
-            sizeCalc = mousePos - startVec;
+            lastPos = toVector2(gameObject.transform.position);
         }
+        Vector2 sizeCalc = mousePos - lastPos;
         float mag = sizeCalc.magnitude;
         if (pathLength + mag > maxLength)
         {
             sizeCalc *= (1 / (mag));
             sizeCalc *= maxLength - pathLength;
-            mousePos = sizeCalc + startVec;
+            mousePos = sizeCalc + lastPos;
         }
         pathLength += sizeCalc.magnitude;
         locations.Add(mousePos);
@@ -91,25 +94,24 @@ public class playerController : NetworkBehaviour
         {
             return;
         }
-        Vector2 sizeCalc;
-        Vector2 startVec;
-        if (locations.Count != 0) {
-            startVec = locations[locations.Count - 1];
-            sizeCalc = mousePos - startVec;
+        Vector2 lastPos;
+        if (locations.Count != 0)
+        {
+            lastPos = locations[locations.Count - 1];
+        } else {
+            lastPos = toVector2(gameObject.transform.position);
         }
-        else {
-            startVec = toVector2(gameObject.transform.position);
-            sizeCalc = mousePos - startVec;
-        }
+        Vector2 sizeCalc = mousePos - lastPos;
         float mag = sizeCalc.magnitude;
         if (pathLength + mag > maxLength)
         {
             sizeCalc *= (1 / (mag));
             sizeCalc *= maxLength - pathLength;
-            mousePos = sizeCalc + startVec;
+            mousePos = sizeCalc + lastPos;
         }
         pathLength += sizeCalc.magnitude;
         locations.Add(mousePos);
+        targets.Add(Instantiate(target, mousePos, Quaternion.identity));
     }
 
     public void addLocation(Vector2 location)
@@ -181,7 +183,12 @@ public class playerController : NetworkBehaviour
             yield return new WaitUntil(() => toVector2(gameObject.transform.position) == locations[i]);
             print("next locations");
         }
+        for (int i = 0; i < targets.Count; i++){
+            GameObject.Destroy(targets[i]);
+        }
+        targets.Clear();
         print("change moving back to false");
+
         Moving = false;
     }
 
@@ -195,5 +202,27 @@ public class playerController : NetworkBehaviour
     Vector3 toVector3(Vector2 vector)
     {
         return new Vector3(vector.x, vector.y, 0);
+    }
+
+    bool onTarget(Vector2 mousePos)
+    {
+        print("check");
+        Ray ray = Camera.main.ScreenPointToRay(mousePos);
+        RaycastHit hit;
+
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.transform.tag == "Target")
+            {
+                print("This is a Target");
+                return true;
+            }
+            else
+            {
+                Debug.Log("This isn't a Target");
+                return false;
+            }
+        }
+        return false;
     }
 }
