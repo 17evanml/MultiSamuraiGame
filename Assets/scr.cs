@@ -32,7 +32,7 @@ public class scr : MonoBehaviour {
 
     private void Start()
     {
-        Debug.Log("z = attack, x = block, c = grab");
+    //    Debug.Log("z = attack, x = block, c = grab");
         health = startHealth;
 
         //Finding ownCollider
@@ -58,7 +58,7 @@ public class scr : MonoBehaviour {
 
         alphaLerp(ref netVector, velocity);
         hurtBox();
-        Debug.Log("Active: " + (State)activeState + "| Hit: " + (State)hitState);
+       // Debug.Log("Active: " + (State)activeState + "| Hit: " + (State)hitState);
     }
 
     //delet this

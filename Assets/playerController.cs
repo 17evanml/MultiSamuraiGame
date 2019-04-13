@@ -34,14 +34,15 @@ public class playerController : NetworkBehaviour
             {   
                 Vector2 normalizedMouse = Camera.main.ScreenToWorldPoint(Input.mousePosition);
                 Vector2 tempLoc = new Vector2(normalizedMouse.x, normalizedMouse.y);
-                if (!onTarget(tempLoc))
+                if (onTarget(tempLoc))
                 {
-                    if (!isServer)
-                    {
-                        CmdStoreLocation(tempLoc);
-                    }
-                    StoreLocation(tempLoc);
+                    return;
                 }
+                if (!isServer)
+                {
+                    CmdStoreLocation(tempLoc);
+                }
+                StoreLocation(tempLoc);
             }
         }
     }
@@ -159,7 +160,7 @@ public class playerController : NetworkBehaviour
         }
         else
         {
-            print("rpc start moving");
+       //     print("rpc start moving");
             Moving = true;
             StartCoroutine(Navigation());
         }
@@ -187,7 +188,7 @@ public class playerController : NetworkBehaviour
             GameObject.Destroy(targets[i]);
         }
         targets.Clear();
-        print("change moving back to false");
+      //  print("change moving back to false");
 
         Moving = false;
     }
@@ -209,7 +210,6 @@ public class playerController : NetworkBehaviour
         print("check");
         Ray ray = Camera.main.ScreenPointToRay(mousePos);
         RaycastHit hit;
-
         if (Physics.Raycast(ray, out hit))
         {
             if (hit.transform.tag == "Target")
