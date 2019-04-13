@@ -5,7 +5,9 @@ using UnityEngine;
 public class CameraFollow : MonoBehaviour
 {
     GameObject player;
-    GameObject[] players;
+    //public GameObject[] players;
+    public List<GameObject> players = new List<GameObject>();
+
     Vector3 center = new Vector3(0.0f, 0.0f, -10.0f);
     public float borderSize = 1.0f;
     float maxX = 0.0f, minX = 0.0f, maxY = 0.0f, minY = 0.0f;
@@ -21,12 +23,11 @@ public class CameraFollow : MonoBehaviour
     private void Start()
     {
         //Find all players in game
-        players = GameObject.FindGameObjectsWithTag("Player");
+        //players = GameObject.FindGameObjectsWithTag("Player");
     }
 
     void Update()
     {
-
         //1. Calculating size of boundary box from origin
         //Reset max and Min
         maxX = 0.0f;
