@@ -149,7 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startHealth: 100
-  healthbar: {fileID: 8739674807756413840}
+  healthbar: {fileID: 1771324965396898121}
   canMove: 1
   velocity: 0.2
   activeState: 0
