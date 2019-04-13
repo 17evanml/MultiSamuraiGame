@@ -74,7 +74,8 @@ public List<playerController> players = new List<playerController>();
         {
             players[i].RpcToggleMoving();
         }
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
+        yield return new WaitUntil(PlayersComplete);
       
         StartCoroutine(Timer(3));
     }
